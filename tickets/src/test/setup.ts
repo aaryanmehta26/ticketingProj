@@ -9,6 +9,8 @@ declare global {
   var getCookie: () => string[];
 }
 
+jest.mock('../nats-wrapper')
+
 let mongo: any;
 
 // before All run before our test
@@ -23,6 +25,7 @@ beforeAll(async () => {
 
 // beforeEach run before each test
 beforeEach(async () => {
+  jest.clearAllMocks()
   const collections = await mongoose.connection.db.collections();
 
   // reset all data in mongo collections
