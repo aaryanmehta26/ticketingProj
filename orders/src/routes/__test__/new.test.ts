@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import { Ticket } from '../../models/ticket';
 import { natsWrapper } from '../../nats-wrapper';
 
+const ID = new mongoose.Types.ObjectId().toHexString();
+
 it('returns an error if the ticket does not exists', async () => {
     const ticketId = new mongoose.Types.ObjectId();
 
@@ -20,6 +22,7 @@ it('reserves a ticket', async () => {
     const ticket = Ticket.build({
         title: 'concert',
         price: 20,
+        id: ID
     });
     await ticket.save();
 
@@ -34,6 +37,7 @@ it('emits an order created event', async () => {
     const ticket = Ticket.build({
         title: 'concert',
         price: 20,
+        id: ID
     });
     await ticket.save();
 

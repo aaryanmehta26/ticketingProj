@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Ticket } from '../models/ticket';
-import { NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from '@amehtatickets/common';
+import { BadRequestError, NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from '@amehtatickets/common';
 import { body } from 'express-validator';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
 import { natsWrapper } from '../nats-wrapper';
@@ -26,6 +26,11 @@ router.put("/api/tickets/:id",
             throw new NotFoundError();
         }
 
+        // if the ticket is reserved, means it has orderId, then dont allow the ticket to edit
+        if (ticket.orderId) {
+            throw new BadRequestError('Cannot edit a reserved ticket')
+        }
+
         // make sure user is editing its own ticket
         if (ticket.userId !== req.currentUser?.id) {
             throw new NotAuthorizedError();
@@ -43,7 +48,8 @@ router.put("/api/tickets/:id",
             id: ticket.id,
             price: ticket.price,
             title: ticket.title,
-            userId: ticket.userId
+            userId: ticket.userId,
+            version: ticket.version
         })
 
         res.send(ticket);
