@@ -17,8 +17,9 @@ const signup = () => {
   });
 
   const onSubmit = async (event) => {
+    console.log('@@@')
     event.preventDefault();
-    doRequest();
+    await doRequest();
   };
 
   return (

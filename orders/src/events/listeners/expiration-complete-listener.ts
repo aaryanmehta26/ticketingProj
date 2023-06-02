@@ -18,6 +18,11 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
             throw new Error('Order not found');
         }
 
+        // before marking the order as canelled, just check if the payment is not done or orderStatus is not compleyed
+        if (order.status === OrderStatus.Complete) {
+            return msg.ack();
+        }
+
         order.set({ status: OrderStatus.Cancelled });
         await order.save();
 

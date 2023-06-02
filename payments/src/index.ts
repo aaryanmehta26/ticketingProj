@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
-import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
-import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
-import { PaymentCreatedListener } from "./events/listeners/payment-created-listener";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -29,14 +27,11 @@ const start = async () => {
       console.log('NATS connection closed!');
       process.exit();
     })
-    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGINT', () => natsWrapper.client.close())
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    // start listen for traffic
-    new TicketCreatedListener(natsWrapper.client).listen();
-    new TicketUpdatedListener(natsWrapper.client).listen();
-    new ExpirationCompleteListener(natsWrapper.client).listen();
-    new PaymentCreatedListener(natsWrapper.client).listen();
+    new OrderCreatedListener(natsWrapper.client).listen();
+    new OrderCancelledListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI); // mongodb://tickets-srv:27017/tickets -> tickets-mongo-srv is the service name, refer tickets-mongo-depl.yaml
     console.log("Connected to MongoDb");
@@ -44,7 +39,7 @@ const start = async () => {
     console.error(err);
   }
   app.listen(3000, () => {
-    console.log("Orders server listening on port 3000!!!!");
+    console.log("Ticket server listening on port 3000!!!!");
   });
 };
 

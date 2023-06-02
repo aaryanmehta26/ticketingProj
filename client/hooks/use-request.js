@@ -4,11 +4,18 @@ import { useState } from "react";
 export const useRequest = ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
-  const doRequest = async () => {
+  console.log('####', errors)
+
+  const doRequest = async (props = {}) => {
     try {
+
       setErrors(null);
-      const response = await axios[method](url, body);
+      const response = await axios[method](url,
+        {
+          ...body, ...props
+        });
       if (onSuccess) {
+        console.log('#### onSuccess', onSuccess)
         onSuccess(response.data);
       }
       return response.data;
@@ -17,7 +24,7 @@ export const useRequest = ({ url, method, body, onSuccess }) => {
         <div className="alert alert-danger">
           <h4>Ooops...</h4>
           <ul className="my-0">
-            {err.response.data.errors.map((err) => (
+            {err.response?.data.errors.map((err) => (
               <li key={err.message}>{err.message}</li>
             ))}
           </ul>
