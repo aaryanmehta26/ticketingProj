@@ -109,12 +109,4 @@ The project is organized into multiple services, each residing in its own direct
 
 You can find more detailed information about each service within their respective directories.
 
-## Contributing
 
-We welcome contributions to the project. If you want to contribute, please follow our [Contribution Guidelines](CONTRIBUTING.md).
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-Enjoy using the Ticketing Application! If you have any questions or encounter issues, please feel free to open an issue on the GitHub repository.
